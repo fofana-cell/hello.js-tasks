@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <title>Currency Exchange</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            document.querySelector('form').onsubmit = async function(e) {
+
+                e.preventDefault();
+
+                try {
+                    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch exchange rates');
+                    }
+                    const data = await response.json();
+                    const currency = document.querySelector('#currency').value.toUpperCase();
+                    const rate = data.rates[currency];
+                    if (rate !== undefined) {
+                        document.querySelector('#result').innerHTML = `1 USD is equal to ${rate.toFixed(3)} ${currency}`;
+                    } else {
+                        document.querySelector('#result').innerHTML = 'Invalid currency.';
+                    }
+                } catch (error) {
+                    console.log('Error:', error);
+                    document.querySelector('#result').innerHTML = 'Error fetching data.';
+                }
+
+                return false;
+            });
+    </script>
+    </head>
+     <body>
+        <form>
+          <input id="currency"  placeholder="currency" type="text">
+            <input type="submit" value="Convert">
+        </form>
+        <div id="result">
+
+        </div>
+     </body>
+</html>
